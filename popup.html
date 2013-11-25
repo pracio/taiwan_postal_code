@@ -36,24 +36,16 @@
       <div class="row">
           <div class="col-xs-2"><img src="icon.png" class="icon center-x"></img></div>
           <div class="col-xs-6 h2 lead"><strong class="center-y">郵遞區號查詢</strong></div>
-          <div class="col-xs-4 center-y">by Poan V1.0</div>
+          <div class="col-xs-4 center-y">by Poan V1.2</div>
       </div>
-      <form name="query_form" style="clear:left;">
-        <div class="form-group">
-          <label for="city" class="col-xs-4 control-label">縣市鎮區鄉名稱：</label>
-          <div class="col-xs-8">
-            <input name="city" id="city" tabIndex="1" data-toggle="tooltip" data-placement="top" data-original-title="請輸入縣市鎮鄉區名稱"></input>
-            <img class="hint" id="hint_city" ></img>
+      <div class="row">
+        <form role="form">
+          <div class="col-xs-2"></div>
+          <div class="form-group col-xs-8">
+            <input type="text" class="form-control"></input>
           </div>
-          <span class="help-block">例如：“桃園縣龍潭鄉”，“新北市板橋區”，“雲林縣”</span>
-          <label for="street" class="col-xs-4 control-label">街/路名稱：</label>
-          <div class="col-xs-8">
-            <input name="street" id="street" tabIndex="2" data-toggle="tooltip" data-placement="top" data-original-title="請輸入路名"></input>
-            <img class="hint" id="hint_street"></img>
-          </div>
-          <span class="help-block">例如：“裕民”，“中山”，“龍岩”，沒有路名就輸入村/鄰/里名稱</span>
-        </div>
-      </form>
+        </form>
+      </div>
       <div class="row">
         <div class="col-xs-4"></div>
         <button type="button" class="btn btn-primary col-xs-4" id="btn" tabIndex="3">查詢郵遞區號</button>
