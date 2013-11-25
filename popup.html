@@ -1,0 +1,67 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>郵遞區號快速查詢插件</title>
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+    <style>
+      body {
+        min-width: 500px;
+        min-height: 500px;
+        overflow-x: hidden;
+        background-image: url(paper_fibers.png);
+      }
+      img.hint {
+        max-width: 20px;
+        max-height: 20px;
+      }
+      img.icon{
+        max-width: 48px;
+        max-height: 48px;
+      }
+      .center-x{
+        text-align: center;
+      }
+      .center-y{
+        vertical-align: middle;
+      }
+    </style>
+    <script src="jquery-1.10.2.min.js"></script>
+    <script src="/js/bootstrap.min.js"></script>
+    <script src="postal_code.js"></script>
+    <script src="city_v2.js"></script>
+  </head>
+  <body>
+    <div style="margin:5px;">
+      <div class="row">
+          <div class="col-xs-2"><img src="icon.png" class="icon center-x"></img></div>
+          <div class="col-xs-6 h2 lead"><strong class="center-y">郵遞區號查詢</strong></div>
+          <div class="col-xs-4 center-y">by Poan V1.0</div>
+      </div>
+      <form name="query_form" style="clear:left;">
+        <div class="form-group">
+          <label for="city" class="col-xs-4 control-label">縣市鎮區鄉名稱：</label>
+          <div class="col-xs-8">
+            <input name="city" id="city" tabIndex="1" data-toggle="tooltip" data-placement="top" data-original-title="請輸入縣市鎮鄉區名稱"></input>
+            <img class="hint" id="hint_city" ></img>
+          </div>
+          <span class="help-block">例如：“桃園縣龍潭鄉”，“新北市板橋區”，“雲林縣”</span>
+          <label for="street" class="col-xs-4 control-label">街/路名稱：</label>
+          <div class="col-xs-8">
+            <input name="street" id="street" tabIndex="2" data-toggle="tooltip" data-placement="top" data-original-title="請輸入路名"></input>
+            <img class="hint" id="hint_street"></img>
+          </div>
+          <span class="help-block">例如：“裕民”，“中山”，“龍岩”，沒有路名就輸入村/鄰/里名稱</span>
+        </div>
+      </form>
+      <div class="row">
+        <div class="col-xs-4"></div>
+        <button type="button" class="btn btn-primary col-xs-4" id="btn" tabIndex="3">查詢郵遞區號</button>
+      </div>
+      <div style="margin:10px;">
+        <table id="table" class="table table-hover"></table>
+      </div>
+    </div>
+  </body>
+</html>
+
