@@ -3,18 +3,36 @@ function query(){
   if(address.length<1){
     //wrong
   }else{
-    console.log(local_query(address));
+    update_table(local_query(address));
   }
 }
 
 function update_table(results){
   var positive = results.filter(function(d){return d[1]>0;});
   var negative = results.filter(function(d){return d[1]<=0;});
+  if(positive.length>0){
+    var flatten = [];
+    positive.forEach(function(p){
+      var ad = database[parseInt(p[0])];
+      flatten = flatten.concat(ad.data.map(function(d){
+        return [d.code,ad.city,ad.area,ad.road,d.type,d.desc];
+      }));
+    });
+    $("#table").empty();
+    $.each(flatten,function(item){
+      var row = $('<tr/>');
+      $.each(flatten[item],function(i){
+        var cell = $('<td/>');
+        cell.text(flatten[item][i]);
+        row.append(cell);
+      });
+      $("#table").append(row);
+    });
+  }
 }
 
 function main(){
-  setTimeout(function(){addScript('data.js',function(){console.log('done');})},1000);
-  setTimeout(function(){addScript('word_pool.js',function(){console.log('done.word_pool');})},800);
+  setTimeout(function(){addScript('data.js',function(){addScript('word_pool.js',function(){console.log('done');});})},500);
   $("#btn").click(query);
   $("#address").bind("enterKey",function(e){
     query();
