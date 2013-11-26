@@ -7,34 +7,68 @@ function query(){
     return;
   }
   var address = $("#address").val();
-  if(address.length<1){
-    //wrong
-  }else{
+  if(address.length<=1){
+    $("#table").empty();
+    $("#query-result").empty();
+  }
+  if(hasFeature(address)){
     update_table(local_query(address));
   }
+}
+
+function validate(event){
+  var add = $(this).val();
+  if(add.length<=1){
+    $(this).parent().removeClass("has-success");
+    $(this).parent().removeClass("has-warning");
+  }else{
+    if(hasFeature(add)){
+      $(this).parent().addClass("has-success");
+    }else{
+      $(this).parent().addClass("has-warning");
+    }
+  }
+}
+
+function hasFeature(value){
+  if(value.length<=1)return false;
+  for (var i = pool.length - 1; i >= 0; i--) {
+    if(value.indexOf(pool[i])>=0){
+      return true;
+    }
+  };
+  return false;
+}
+
+function build_table(results){
+  var flatten = [];
+  results.forEach(function(p){
+    var ad = database[parseInt(p[0])];
+    flatten = flatten.concat(ad.data.map(function(d){
+      return [d.code,ad.city,ad.area,ad.road,d.type,d.desc];
+    }));
+  });
+  $.each(flatten,function(item){
+    var row = $('<tr/>');
+    $.each(flatten[item],function(i){
+      var cell = $('<td/>');
+      cell.text(flatten[item][i]);
+      row.append(cell);
+    });
+    $("#table").append(row);
+  });
 }
 
 function update_table(results){
   var positive = results.filter(function(d){return d[1]>0;});
   var negative = results.filter(function(d){return d[1]<=0;});
+  $("#table").empty();
+  $("#query-result").empty();
   if(positive.length>0){
-    var flatten = [];
-    positive.forEach(function(p){
-      var ad = database[parseInt(p[0])];
-      flatten = flatten.concat(ad.data.map(function(d){
-        return [d.code,ad.city,ad.area,ad.road,d.type,d.desc];
-      }));
-    });
-    $("#table").empty();
-    $.each(flatten,function(item){
-      var row = $('<tr/>');
-      $.each(flatten[item],function(i){
-        var cell = $('<td/>');
-        cell.text(flatten[item][i]);
-        row.append(cell);
-      });
-      $("#table").append(row);
-    });
+    build_table(positive);
+  }else{
+    $("#query-result").text('查無確切資料，以下顯示近似結果');
+    build_table(negative);
   }
 }
 
@@ -59,11 +93,13 @@ function main(){
       $(this).trigger('enterKey');
     }
   });
+  $("#address").on('input',validate);
+  $("#address").tooltip({placement:'top'});
+  loadDatabase();
 }
 
 function addScript(scriptURL, onload) {
    var script = document.createElement('script');
-   //script.setAttribute("type", "application/javascript");
    script.setAttribute("src", scriptURL);
    if (onload) script.onload = onload;
    document.documentElement.appendChild(script);
@@ -79,7 +115,6 @@ function local_query(str){
     }
   }
   feat = consolidate(feat);
-  // console.log(feat);
   var result = [];
   for(var d in database){
     var score = match(database[d].feat,feat);
