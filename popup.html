@@ -39,19 +39,20 @@
           <div class="col-xs-4 center-y">by Poan V1.2</div>
       </div>
       <div class="row">
-        <form role="form">
-          <div class="col-xs-2"></div>
-          <div class="form-group col-xs-8">
-            <input type="text" class="form-control"></input>
-          </div>
-        </form>
+        <div class="col-xs-2"></div>
+        <div class="form-group col-xs-8">
+          <input type="text" class="form-control text-center" id="address" placeholder="請在此輸入地址"></input>
+        </div>
       </div>
       <div class="row">
         <div class="col-xs-4"></div>
         <button type="button" class="btn btn-primary col-xs-4" id="btn" tabIndex="3">查詢郵遞區號</button>
       </div>
       <div style="margin:10px;">
-        <table id="table" class="table table-hover"></table>
+        <table class="table table-striped table-hover table-condensed">
+          <tbody id="table">
+          </tbody>
+        </table>
       </div>
     </div>
   </body>
