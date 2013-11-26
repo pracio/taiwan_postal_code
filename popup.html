@@ -33,20 +33,23 @@
   </head>
   <body>
     <div style="margin:5px;">
-      <div class="row">
+      <div class="row center-y">
           <div class="col-xs-2"><img src="icon.png" class="icon center-x"></img></div>
-          <div class="col-xs-6 h2 lead"><strong class="center-y">郵遞區號查詢</strong></div>
-          <div class="col-xs-4 center-y">by Poan V1.2</div>
+          <div class="col-xs-7 h2 lead"><strong class="center-y">郵遞區號查詢</strong></div>
+          <div class="col-xs-3">by Poan V1.2</div>
       </div>
       <div class="row">
         <div class="col-xs-2"></div>
         <div class="form-group col-xs-8">
-          <input type="text" class="form-control text-center" id="address" placeholder="請在此輸入地址"></input>
+          <input type="text" class="form-control text-center input-lg" id="address" placeholder="請在此輸入地址"></input>
         </div>
       </div>
       <div class="row">
         <div class="col-xs-4"></div>
-        <button type="button" class="btn btn-primary col-xs-4" id="btn" tabIndex="3">查詢郵遞區號</button>
+        <button type="button" class="btn btn-primary col-xs-4" id="btn" tabIndex="3" data-loading-text="載入地址中">
+          <span class="glyphicon glyphicon-search"></span>
+          查詢郵遞區號
+        </button>
       </div>
       <div style="margin:10px;">
         <table class="table table-striped table-hover table-condensed">
@@ -54,6 +57,12 @@
           </tbody>
         </table>
       </div>
+    </div>
+    <div class="row">
+      <div class="col-xs-8"></div>
+      <button type="button" class="btn btn-default col-xs-3" id="github">
+        <img src="GitHub-Mark-18px.png"></img>View on Github
+      </button>
     </div>
   </body>
 </html>

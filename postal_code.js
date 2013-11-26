@@ -1,4 +1,11 @@
+var pool;
+var database;
+
 function query(){
+  if(pool===undefined || database==undefined){
+    loadDatabase();
+    return;
+  }
   var address = $("#address").val();
   if(address.length<1){
     //wrong
@@ -31,9 +38,19 @@ function update_table(results){
   }
 }
 
+function loadDatabase(){
+  $("#btn").button('loading');
+  addScript('data.js',function(){
+    addScript('word_pool.js',function(){
+      $("#btn").button('reset');
+      $("#btn").click();
+    });
+  });
+}
+
 function main(){
-  setTimeout(function(){addScript('data.js',function(){addScript('word_pool.js',function(){console.log('done');});})},500);
   $("#btn").click(query);
+  $("#github").click(function(){openTab('https://github.com/pracio/taiwan_postal_code/')});
   $("#address").bind("enterKey",function(e){
     query();
   });
@@ -76,12 +93,6 @@ function local_query(str){
   }
   result.reverse();
   return result;
-  // var code = [];
-  // for(var r in result){
-  //   code.push(database[result[r][0]]);
-  // }
-  // code.reverse();
-  // return code;
 }
 
 function compare(a,b){
@@ -134,6 +145,10 @@ function consolidate(feat){
 
 function contains(one,two){
   return (one.indexOf(two)!==-1) || (two.indexOf(one)!==-1);
+}
+
+function openTab(url){
+  chrome.tabs.create({url:url});
 }
 
 window.addEventListener("load", main);
