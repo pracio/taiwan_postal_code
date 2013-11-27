@@ -83,6 +83,7 @@ function loadDatabase(){
 }
 
 function main(){
+  loadDatabase();
   $("#btn").click(query);
   $("#github").click(function(){openTab('https://github.com/pracio/taiwan_postal_code/')});
   $("#address").bind("enterKey",function(e){
@@ -95,7 +96,6 @@ function main(){
   });
   $("#address").on('input',validate);
   $("#address").tooltip({placement:'top'});
-  loadDatabase();
 }
 
 function addScript(scriptURL, onload) {

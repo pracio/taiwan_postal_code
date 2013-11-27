@@ -1,4 +1,4 @@
-taiwan_postal_code
+Taiwan Postal Code Quary Library
 ==================
 
-a google chrome extension for querying taiwan postal code
+This a google chrome extension for querying taiwan postal code.
