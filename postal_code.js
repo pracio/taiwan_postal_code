@@ -82,9 +82,17 @@ function loadDatabase(){
   });
 }
 
+function goto_map(){
+  var add = $("#address").val();
+  if(add!=undefined && add.length>=1){
+    openTab("http://maps.google.com/?q="+add);
+  }
+}
+
 function main(){
   loadDatabase();
   $("#btn").click(query);
+  $("#map").click(goto_map);
   $("#github").click(function(){openTab('https://github.com/pracio/taiwan_postal_code/')});
   $("#address").bind("enterKey",function(e){
     query();
