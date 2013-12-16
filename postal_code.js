@@ -2,10 +2,17 @@ var pool;
 var database;
 
 function query(){
-  if(pool===undefined || database==undefined){
+  if(pool===undefined){
+    loadPool();
+  }
+  if(database==undefined){
     loadDatabase();
     return;
   }
+  // if(pool===undefined || database==undefined){
+  //   loadDatabase();
+  //   return;
+  // }
   var address = $("#address").val();
   if(address.length<=1){
     $("#table").empty();
@@ -16,18 +23,27 @@ function query(){
   }
 }
 
-function validate(event){
-  var add = $(this).val();
-  if(add.length<=1){
-    $(this).parent().removeClass("has-success");
-    $(this).parent().removeClass("has-warning");
+function validate(address){
+  if(pool===undefined){
+    loadPool();
+    validate(address);
+  }
+  var $input = $("#address");
+  if(address.length<=1){
+    $input.parent().removeClass("has-success");
+    $input.parent().removeClass("has-warning");
   }else{
-    if(hasFeature(add)){
-      $(this).parent().addClass("has-success");
+    if(hasFeature(address)){
+      $input.parent().addClass("has-success");
     }else{
-      $(this).parent().addClass("has-warning");
+      $input.parent().addClass("has-warning");
     }
   }
+}
+
+function validate_input(event){
+  var add = $(this).val();
+  validate(add);
 }
 
 function hasFeature(value){
@@ -72,13 +88,19 @@ function update_table(results){
   }
 }
 
+function loadPool(should_validate){
+  addScript('word_pool.js',function(){
+    if(should_validate){
+      validate();
+    }
+  });
+}
+
 function loadDatabase(){
   $("#btn").button('loading');
   addScript('data.js',function(){
-    addScript('word_pool.js',function(){
-      $("#btn").button('reset');
-      $("#btn").click();
-    });
+    $("#btn").button('reset');
+    $("#btn").click();
   });
 }
 
@@ -90,7 +112,7 @@ function goto_map(){
 }
 
 function main(){
-  loadDatabase();
+  //loadDatabase();
   $("#btn").click(query);
   $("#map").click(goto_map);
   $("#github").click(function(){openTab('https://github.com/pracio/taiwan_postal_code/')});
@@ -102,7 +124,7 @@ function main(){
       $(this).trigger('enterKey');
     }
   });
-  $("#address").on('input',validate);
+  $("#address").on('input',validate_input);
   $("#address").tooltip({placement:'top'});
 }
 
