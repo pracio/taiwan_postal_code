@@ -2,7 +2,7 @@
 <html>
   <head>
     <meta charset="utf-8">
-    <title>郵遞區號快速查詢插件</title>
+    <title>台灣郵遞區號快速查詢</title>
     <link rel="stylesheet" href="/css/bootstrap.min.css">
     <style>
       body {
@@ -36,7 +36,7 @@
     <div style="margin:5px;">
       <div class="row center-y">
           <div class="col-xs-1"><img src="icon.png" class="icon center-x"></img></div>
-          <div class="col-xs-10 h2 lead text-center"><strong>郵遞區號查詢</strong></div>
+          <div class="col-xs-10 h2 lead text-center"><strong>台灣郵遞區號查詢</strong></div>
           <button type="button" class="btn btn-default col-xs-1" id="github">
             <img src="GitHub-Mark-18px.png"></img>
           </button>
@@ -68,6 +68,25 @@
           <tbody id="table">
           </tbody>
         </table>
+        <span id="hint" class="glyphicon glyphicon-question-sign"><a href="javascript:void(0);">找不到郵遞區號?點此了解如何提升查詢結果</a></span>
+      </div>
+    </div>
+    <div class="modal fade" id="hint_modal" tabindex="-1" role="dialog" aria-labelledby="modal_title" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+            <h4 class="modal-title" id="modal_title">如何提升查詢結果?</h4>
+          </div>
+          <div class="modal-body">
+            <p>根據台灣的地址構成方式，要查找任意一個地址的郵遞區號，只需要知道：</p>
+            <p><strong>1.縣/市:</strong>由5都以及其他17個縣市構成。<br><strong>2.市/鄉/鎮/區:</strong>如為5都則為某某區，其他則填入市/鄉/鎮等<br><strong>3.路/村/里:</strong>如果地址中同時包含有路、村、里或者鄰等，那麼填入完整的路名（如中山北路1段）即可。</p>
+            <p>路名中的段號請用阿拉伯數字</p>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-primary" data-dismiss="modal">了解!讓我試試</button>
+          </div>
+        </div>
       </div>
     </div>
   </body>

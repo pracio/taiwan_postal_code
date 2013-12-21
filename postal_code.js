@@ -2,19 +2,16 @@ var pool;
 var database;
 
 function query(){
-  if(pool===undefined){
+  if(pool==undefined){
     loadPool();
   }
   if(database==undefined){
     loadDatabase();
     return;
   }
-  // if(pool===undefined || database==undefined){
-  //   loadDatabase();
-  //   return;
-  // }
   var address = $("#address").val();
   if(address.length<=1){
+    $("#hint").hide();
     $("#table").empty();
     $("#query-result").empty();
   }
@@ -23,27 +20,25 @@ function query(){
   }
 }
 
-function validate(address){
-  if(pool===undefined){
+function validate(addObj){
+  if(pool==undefined){
     loadPool();
-    validate(address);
   }
-  var $input = $("#address");
-  if(address.length<=1){
-    $input.parent().removeClass("has-success");
-    $input.parent().removeClass("has-warning");
+  var str = addObj.val();
+  if(str.length<=1){
+    addObj.parent().removeClass("has-success");
+    addObj.parent().removeClass("has-warning");
   }else{
-    if(hasFeature(address)){
-      $input.parent().addClass("has-success");
+    if(hasFeature(str)){
+      addObj.parent().addClass("has-success");
     }else{
-      $input.parent().addClass("has-warning");
+      addObj.parent().addClass("has-warning");
     }
   }
 }
 
 function validate_input(event){
-  var add = $(this).val();
-  validate(add);
+  validate($(this));
 }
 
 function hasFeature(value){
@@ -80,6 +75,7 @@ function update_table(results){
   var negative = results.filter(function(d){return d[1]<=0;});
   $("#table").empty();
   $("#query-result").empty();
+  $("#hint").show();
   if(positive.length>0){
     build_table(positive);
   }else{
@@ -88,12 +84,10 @@ function update_table(results){
   }
 }
 
-function loadPool(should_validate){
-  addScript('word_pool.js',function(){
-    if(should_validate){
-      validate();
-    }
-  });
+function loadPool(){
+  if(pool==undefined){
+    addScript('word_pool.js',null);
+  }
 }
 
 function loadDatabase(){
@@ -111,8 +105,13 @@ function goto_map(){
   }
 }
 
+function click_hint(){
+  $('#hint_modal').modal('show');
+}
+
 function main(){
-  //loadDatabase();
+  $("#hint").hide();
+  $("#hint").click(click_hint);
   $("#btn").click(query);
   $("#map").click(goto_map);
   $("#github").click(function(){openTab('https://github.com/pracio/taiwan_postal_code/')});
@@ -144,7 +143,7 @@ function local_query(str){
       feat.push(p);
     }
   }
-  feat = consolidate(feat);
+  feat = merge(feat);
   var result = [];
   for(var d in database){
     var score = match(database[d].feat,feat);
@@ -189,7 +188,7 @@ function match(feat1,feat2){
   return score;
 }
 
-function consolidate(feat){
+function merge(feat){
   ret = [];
   for(var i=0;i<feat.length;i++){ 
     var saveI = true;
