@@ -188,12 +188,9 @@ function local_query(str){
     if(f>=0){
       str = str.replace(pool[p],'');
       feat.push(parseInt(p));
-      console.log(str);
     }
   }
-  console.log(feat);
   //problem here we have is we have some weird word included into the list
-  //feat = merge(feat);
   var result = [];
   for(var d in database){
     var score = match(database[d].feat,feat);
