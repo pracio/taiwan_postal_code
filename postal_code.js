@@ -1,6 +1,50 @@
 var pool;
 var database;
 
+var replace = '123456789';
+var original = '１２３４５６７８９';
+var chinese_number = '一二三四五六七八九'
+var pattern = new RegExp('(\\d{1,4})[路巷街]','g');
+
+function adjust_query_address(address){
+  /*
+  make sure the input of the string is the same
+  */
+  for(var i in original){
+    for(var j =0;j<address.length;j++){
+      if(address[j]==original[i]){
+        address = replaceAt(address,j,replace[i]);
+      }
+    }
+  }
+  /*
+  make sure the numbers before 路巷街 changed to chinese character
+  */
+  var matches = address.match(pattern);
+  for(var m in matches){
+    var idx = address.indexOf(matches[m]);
+    for(var i=idx;i<idx+matches[m].length-1;i++){
+      address = replaceAt(address,i,chinese_number[replace.indexOf(address[i])]);
+    }
+  }
+  for(var s = 0;s<address.length-1;s++){
+    if(address[s]=='臺' && address[s+1]!='灣'){
+      address = replaceAt(address,s,'台');
+    }
+  }
+  return address;
+}
+
+function replaceAt(string,idx,character){
+  var s = string.split("");
+  s[idx]=character;
+  return s.join("");
+}
+
+function hasCharacter(source,target){
+  return source.indexOf(target)>0;
+}
+
 function query(){
   if(pool==undefined){
     loadPool();
@@ -15,7 +59,9 @@ function query(){
     $("#table").empty();
     $("#query-result").empty();
   }
+  address = adjust_query_address(address);
   if(hasFeature(address)){
+    $("#address").val(address);
     update_table(local_query(address));
   }
 }
@@ -24,7 +70,7 @@ function validate(addObj){
   if(pool==undefined){
     loadPool();
   }
-  var str = addObj.val();
+  var str = adjust_query_address(addObj.val());
   if(str.length<=1){
     addObj.parent().removeClass("has-success");
     addObj.parent().removeClass("has-warning");
@@ -139,11 +185,15 @@ function local_query(str){
   var feat = [];
   for(var p in pool){
     var f = str.indexOf(pool[p]);
-    if(f!==-1){
-      feat.push(p);
+    if(f>=0){
+      str = str.replace(pool[p],'');
+      feat.push(parseInt(p));
+      console.log(str);
     }
   }
-  feat = merge(feat);
+  console.log(feat);
+  //problem here we have is we have some weird word included into the list
+  //feat = merge(feat);
   var result = [];
   for(var d in database){
     var score = match(database[d].feat,feat);
