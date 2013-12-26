@@ -3,7 +3,7 @@
 
   "name": "郵查",
   "description": "台灣五碼郵遞區號快速查詢",
-  "version": "1.3",
+  "version": "1.3.1",
   "author":"Poan Shen",
   "permissions": [
     "tabs"
