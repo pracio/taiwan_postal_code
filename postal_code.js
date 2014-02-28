@@ -62,7 +62,8 @@ function query(){
   address = adjust_query_address(address);
   if(hasFeature(address)){
     $("#address").val(address);
-    update_table(local_query(address));
+    //update_table(local_query(address));
+    update_table(FuzzyQuery(address));
   }
 }
 
@@ -117,8 +118,8 @@ function build_table(results){
 }
 
 function update_table(results){
-  var positive = results.filter(function(d){return d[1]>0;});
-  var negative = results.filter(function(d){return d[1]<=0;});
+  var positive = results.filter(function(d){return d[1]<=8;});
+  var negative = results.filter(function(d){return d[1]>8;});
   $("#table").empty();
   $("#query-result").empty();
   $("#hint").show();
