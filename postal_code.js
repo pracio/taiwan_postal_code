@@ -10,6 +10,7 @@ function adjust_query_address(address){
   /*
   make sure the input of the string is the same
   */
+  return address;
   for(var i in original){
     for(var j =0;j<address.length;j++){
       if(address[j]==original[i]){
@@ -191,7 +192,6 @@ function local_query(str){
       feat.push(parseInt(p));
     }
   }
-  //problem here we have is we have some weird word included into the list
   var result = [];
   for(var d in database){
     var score = match(database[d].feat,feat);
