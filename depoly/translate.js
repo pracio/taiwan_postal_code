@@ -1,0 +1,1 @@
+parent._urlEncode_iframe_callback && parent._urlEncode_iframe_callback(location.search.split('=')[1]);

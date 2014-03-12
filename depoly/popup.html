@@ -1,0 +1,95 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>台灣郵遞區號快速查詢</title>
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+    <style>
+      body {
+        min-width: 500px;
+        min-height: 500px;
+        overflow-x: hidden;
+        background-image: url(paper_fibers.png);
+        margin-right: 20px;
+      }
+      img.hint {
+        max-width: 20px;
+        max-height: 20px;
+      }
+      img.icon{
+        max-width: 48px;
+        max-height: 48px;
+      }
+      .center-x{
+        text-align: center;
+      }
+      .center-y{
+        vertical-align: middle;
+      }
+    </style>
+    <script src="jquery-1.10.2.min.js"></script>
+    <script src="/js/bootstrap.min.js"></script>
+    <script src="postal_code.js"></script>
+    <script src="city_v2.js"></script>
+    <script src="fuzzy.js"></script>
+  </head>
+  <body>
+    <div style="margin:5px;">
+      <div class="row center-y">
+          <div class="col-xs-1"><img src="icon.png" class="icon center-x"></img></div>
+          <div class="col-xs-10 h2 lead text-center"><strong>台灣郵遞區號查詢</strong></div>
+          <button type="button" class="btn btn-default col-xs-1" id="github">
+            <img src="GitHub-Mark-18px.png"></img>
+          </button>
+      </div>
+      <div class="row">
+        <div class="col-xs-2"></div>
+        <div class="form-group col-xs-8">
+          <input type="text" 
+          class="form-control text-center input-lg" 
+          id="address" placeholder="如：台北市中正區凱達格蘭大道"
+          data-toggle="tooltip" title="請輸入地址"
+          ></input>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-xs-3"></div>
+        <button type="button" class="btn btn-primary col-xs-4" id="btn" tabIndex="3" data-loading-text="載入地址中">
+          <span class="glyphicon glyphicon-search"></span>
+          查詢郵遞區號
+        </button>
+        <div class="col-xs-1"></div>
+        <button type="button" class="btn btn-primary col-xs-1" id="map">
+          <span class="glyphicon glyphicon-map-marker"></span>
+        </button>
+      </div>
+      <strong id="query-result" class="col-xs-10" style="margin-top:3px;"></strong>
+      <div style="margin:10px;height:330px;width:500px;overflow:auto;">
+        <table class="table table-striped table-hover table-condensed">
+          <tbody id="table">
+          </tbody>
+        </table>
+        <span id="hint" class="glyphicon glyphicon-question-sign"><a href="javascript:void(0);">找不到郵遞區號?點此了解如何提升查詢結果</a></span>
+      </div>
+    </div>
+    <div class="modal fade" id="hint_modal" tabindex="-1" role="dialog" aria-labelledby="modal_title" aria-hidden="true">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+            <h4 class="modal-title" id="modal_title">如何提升查詢結果?</h4>
+          </div>
+          <div class="modal-body">
+            <p>根據台灣的地址構成方式，要查找任意一個地址的郵遞區號，只需要知道：</p>
+            <p><strong>1.縣/市:</strong>由5都以及其他17個縣市構成。<br><strong>2.市/鄉/鎮/區:</strong>如為5都則為某某區，其他則填入市/鄉/鎮等<br><strong>3.路/村/里:</strong>如果地址中同時包含有路、村、里或者鄰等，那麼填入完整的路名（如中山北路1段）即可。</p>
+            <p>路名中的段號請用阿拉伯數字</p>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-primary" data-dismiss="modal">了解!讓我試試</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
+
