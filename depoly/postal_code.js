@@ -171,8 +171,16 @@ function main(){
       $(this).trigger('enterKey');
     }
   });
+  $(document).on("paste",function (event) {
+    // reads the data here
+    var paste = (event.originalEvent || event).clipboardData.getData('text/plain') || prompt('請輸入地址');
+    if(!$("#address").is(":focus")){
+      $("#address").val(paste);
+    }
+  });
   $("#address").on('input',validate_input);
   $("#address").tooltip({placement:'top'});
+  $("#address").focus();
 }
 
 function addScript(scriptURL, onload) {
