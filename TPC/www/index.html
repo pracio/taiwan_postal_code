@@ -1,0 +1,37 @@
+<!DOCTYPE html><!--HTML5 doctype-->
+<html>
+<head>
+	<title>Your New Application</title>
+	<meta http-equiv="Content-type" content="text/html; charset=utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=0" />
+	<style type="text/css">
+		/* Prevent copy paste for all elements except text fields */
+		*  { -webkit-user-select:none; -webkit-tap-highlight-color:rgba(255, 255, 255, 0); }
+		input, textarea  { -webkit-user-select:text; }
+		body { background-color:white; color:black }
+	</style>
+	<script src='intelxdk.js'></script>
+    <script src="js/jquery-1.10.2.min.js"></script>
+    <script src="js/data.js"></script>
+    <script src="js/word_pool.js"></script>
+    <script src="js/fuzzy.js"></script>
+    <script src="js/main.js"></script>
+	<script type="text/javascript">
+		/* This code is used to run as soon as Intel activates */
+		var onDeviceReady=function(){
+		//hide splash screen
+		intel.xdk.device.hideSplashScreen();
+		};
+		document.addEventListener("intel.xdk.device.ready",onDeviceReady,false);
+	</script>
+</head>
+<body>
+	<!-- content goes here-->
+    <label>Hi Please Input the address you want to search here!</label>
+    <input type="text" value="text" id="address"/>
+    <input type="button" value="OK" id="search"/>
+    <table>
+        <tbody id="table_content"></tbody>
+    </table>
+</body>
+</html>

@@ -57,6 +57,7 @@ function query(){
   var address = $("#address").val();
   if(address.length<=1){
     $("#hint").hide();
+    $("div#donate").hide();
     $("#table").empty();
     $("#query-result").empty();
   }
@@ -124,6 +125,7 @@ function update_table(results){
   $("#table").empty();
   $("#query-result").empty();
   $("#hint").show();
+  $("div#donate").show();
   if(positive.length>0){
     build_table(positive);
   }else{
