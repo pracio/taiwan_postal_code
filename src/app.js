@@ -1,7 +1,7 @@
 // app.js — popup 主流程：輸入 → parse → 定位 zip3 → 比對區間 → 渲染
 import { parseAddress } from './normalize.js';
 import { findDistricts, dataStats } from './data.js';
-import { queryDistrict, suggestRoads } from './matcher.js';
+import { queryDistrict, queryDistrictFuzzy, suggestRoads } from './matcher.js';
 
 const $ = (id) => document.getElementById(id);
 const input = $('address');
@@ -98,8 +98,14 @@ async function search() {
         const sug = await suggestRoads(d.zip3, '');
         if (sug.length === 0) continue;
       }
-      const hits = await queryDistrict(d.zip3, road, parsed.seg);
-      for (const h of hits) allHits.push({ ...h, _district: d });
+      let hits = await queryDistrict(d.zip3, road, parsed.seg);
+      // 精確比對落空 → 模糊路名後備（打「中山北」也能命中「中山北路1段」、錯字容錯）
+      let fuzzy = false;
+      if (hits.length === 0 && road && road.length >= 2) {
+        hits = await queryDistrictFuzzy(d.zip3, road, parsed.seg, 5);
+        fuzzy = hits.length > 0;
+      }
+      for (const h of hits) allHits.push({ ...h, _district: d, _fuzzy: fuzzy });
     }
     if (seq !== searchSeq) return;
 

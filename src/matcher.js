@@ -8,6 +8,7 @@
 //   numStart1/numEnd1：之N 的 N（含 15之2 起 / 至 143之3）
 
 import { loadZipRanges, loadRoads } from './data.js';
+import { fuzzyTop } from './fuzzy.js';
 
 const PINYIN_TOL = 0; // 預留
 
@@ -85,6 +86,35 @@ export async function queryDistrict(zip3, roadName, seg) {
     });
   }
   hits.sort((a, b) => (b._specificity - a._specificity) || (scoreHit(b) - scoreHit(a)));
+  return hits;
+}
+
+/**
+ * 精確比對落空時的模糊後備：找出相似路名，逐一跑區間比對。
+ * 回傳 [{zip6, road, why, exact, similarity}]，先按路名相似度、再按區間具體度排序。
+ */
+export async function queryDistrictFuzzy(zip3, roadName, seg, topN = 5) {
+  const [roads, ranges] = await Promise.all([loadRoads(zip3), loadZipRanges(zip3)]);
+  const names = roads.map((r) => r.name);
+  const top = fuzzyTop(names, roadName, topN);
+  const hits = [];
+  for (const [idx, sim] of top) {
+    const name = names[idx];
+    for (const r of ranges) {
+      if (stripRoad(r.road) !== stripRoad(name)) continue;
+      if (!rangeMatches(r, seg)) continue;
+      hits.push({
+        zip6: r.zip6,
+        road: r.road,
+        why: describeWhy(r, seg),
+        exact: isExact(r, seg),
+        similarity: sim,
+        _specificity: specificity(r, seg),
+      });
+    }
+  }
+  hits.sort((a, b) => (b.similarity - a.similarity) ||
+    (b._specificity - a._specificity) || (scoreHit(b) - scoreHit(a)));
   return hits;
 }
 
