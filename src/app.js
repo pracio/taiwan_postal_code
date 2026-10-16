@@ -8,7 +8,7 @@ const input = $('address');
 const results = $('results');
 const statusEl = $('status');
 const emptyHint = $('empty-hint');
-let didYouMean = null; // { label, city, district, road } 點擊後重查
+let didYouMean = null; // { city, district, road, sim } 點擊後重查
 
 function setStatus(msg) {
   statusEl.hidden = !msg && !didYouMean;
@@ -25,7 +25,7 @@ function setStatus(msg) {
   bar.append('你是不是想找：');
   const b = document.createElement('button');
   b.type = 'button';
-  b.textContent = didYouMean.label;
+  b.textContent = didYouMean.road;
   b.addEventListener('click', () => {
     const { city, district, road } = didYouMean;
     didYouMean = null;

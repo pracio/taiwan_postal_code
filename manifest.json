@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "name": "郵查 3+3",
   "description": "台灣 3+3 郵遞區號快速查詢（離線，模糊路名比對）",
-  "version": "2.2.1",
+  "version": "2.2.2",
   "author": "Poan Shen",
   "minimum_chrome_version": "88",
   "action": {
