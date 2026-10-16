@@ -4,6 +4,7 @@ import { findDistricts, dataStats } from './data.js';
 import { queryDistrict, queryDistrictFuzzy, suggestRoads, bestFuzzyRoad } from './matcher.js';
 
 const $ = (id) => document.getElementById(id);
+const input = $('address');
 const results = $('results');
 const statusEl = $('status');
 const emptyHint = $('empty-hint');
