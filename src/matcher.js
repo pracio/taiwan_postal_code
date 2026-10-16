@@ -118,6 +118,20 @@ export async function queryDistrictFuzzy(zip3, roadName, seg, topN = 5) {
   return hits;
 }
 
+/**
+ * 「你是不是想找」：精確比對落空時，給出區內最相似的路名建議。
+ * 回傳 { road, similarity } 或 null（無夠像的候選）。
+ * similarity < 100 表示使用者輸入與資料路名有差異（前綴/錯字/缺字）。
+ */
+export async function bestFuzzyRoad(zip3, roadName) {
+  if (!roadName || roadName.length < 2) return null;
+  const roads = await loadRoads(zip3);
+  const top = fuzzyTop(roads.map((r) => r.name), roadName, 1);
+  if (top.length === 0) return null;
+  const [idx, sim] = top[0];
+  return { road: roads[idx].name, similarity: sim };
+}
+
 /** even 有約束 > 有號碼上下限 > 只有下限（至路底） */
 function specificity(r, seg) {
   let s = 0;

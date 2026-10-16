@@ -1,17 +1,54 @@
 // app.js — popup 主流程：輸入 → parse → 定位 zip3 → 比對區間 → 渲染
 import { parseAddress } from './normalize.js';
 import { findDistricts, dataStats } from './data.js';
-import { queryDistrict, queryDistrictFuzzy, suggestRoads } from './matcher.js';
+import { queryDistrict, queryDistrictFuzzy, suggestRoads, bestFuzzyRoad } from './matcher.js';
 
 const $ = (id) => document.getElementById(id);
-const input = $('address');
 const results = $('results');
 const statusEl = $('status');
 const emptyHint = $('empty-hint');
+let didYouMean = null; // { label, city, district, road } 點擊後重查
 
 function setStatus(msg) {
-  statusEl.hidden = !msg;
+  statusEl.hidden = !msg && !didYouMean;
   statusEl.textContent = msg || '';
+  // 你是不是想找 條（独立於訊息文字）
+  let bar = document.getElementById('did-you-mean');
+  if (!didYouMean) { bar?.remove(); return; }
+  if (!bar) {
+    bar = document.createElement('div');
+    bar.id = 'did-you-mean';
+    statusEl.after(bar);
+  }
+  bar.innerHTML = '';
+  bar.append('你是不是想找：');
+  const b = document.createElement('button');
+  b.type = 'button';
+  b.textContent = didYouMean.label;
+  b.addEventListener('click', () => {
+    const { city, district, road } = didYouMean;
+    didYouMean = null;
+    // 用建議路名重組查詢字串：保留號等細節由 parseSegments 從原輸入取
+    input.value = `${city}${district}${road}${pendingTail || ''}`;
+    pendingTail = '';
+    search();
+  });
+  bar.appendChild(b);
+}
+
+// 點建議時要保留的「路名之後」的部分（號、樓等）
+let pendingTail = '';
+
+/** 從原始輸入取出路名之後的尾段（N號N樓…），供建議點擊重查 */
+function tailAfterRoad(raw, road) {
+  if (!road) return '';
+  const i = raw.indexOf(road);
+  if (i < 0) {
+    // 輸入路名與資料不同（錯字），用正則抓路名之後的數字段
+    const m = raw.match(/[路街道](?:\d+段)?((?:\d+巷)?(?:\d+弄)?(?:\d+(?:之\d+)?號?)?(?:\d+樓)?.*)$/);
+    return m ? m[1] : '';
+  }
+  return raw.slice(i + road.length);
 }
 
 function toast(msg) {
@@ -90,6 +127,7 @@ async function search() {
     }
 
     const allHits = [];
+    let bestSuggestion = null; // { city, district, road, sim }
     const limit = 6; // 最多試 6 個行政區，避免卡頓
     for (const d of districts.slice(0, limit)) {
       let road = parsed.seg.road;
@@ -104,10 +142,27 @@ async function search() {
       if (hits.length === 0 && road && road.length >= 2) {
         hits = await queryDistrictFuzzy(d.zip3, road, parsed.seg, 5);
         fuzzy = hits.length > 0;
+        // 記錄最佳建議（相似度最高的行政區）
+        if (fuzzy) {
+          const cand = await bestFuzzyRoad(d.zip3, road);
+          if (cand && cand.similarity < 100 &&
+              (!bestSuggestion || cand.similarity > bestSuggestion.sim)) {
+            bestSuggestion = { city: d.city, district: d.district, road: cand.road, sim: cand.similarity };
+          }
+        }
       }
       for (const h of hits) allHits.push({ ...h, _district: d, _fuzzy: fuzzy });
     }
     if (seq !== searchSeq) return;
+
+    // 「你是不是想找」：只在模糊命中且輸入與路名有實質差異時顯示
+    didYouMean = null;
+    if (bestSuggestion && bestSuggestion.sim < 95) {
+      didYouMean = bestSuggestion;
+      // 尾段 = 去掉縣市區之後的輸入，再抓路名之後的部分（號、樓…）
+      const rawRest = parsed.raw.slice((parsed.city + parsed.district).length);
+      pendingTail = tailAfterRoad(rawRest, parsed.seg.road);
+    }
 
     if (allHits.length === 0) {
       // 退化：只比對行政區，給 3 碼
